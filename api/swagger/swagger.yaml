@@ -1,0 +1,216 @@
+swagger: "2.0"
+info:
+  version: "0.0.1"
+  title: Shoe Management Aplication
+# during dev, should point to your local machine
+#host: localhost:10010
+host: localhost:3000
+# basePath prefixes all resource paths 
+basePath: /
+# 
+schemes:
+  # tip: remove http to make production-grade
+  - http
+  - https
+# format of bodies a client can send (Content-Type)
+consumes:
+  - application/json
+# format of the responses to the client (Accepts)
+produces:
+  - application/json
+paths:
+  /token/{tokenid}:
+    x-swagger-router-controller: mainfile
+    get:
+      tags:
+      - Giving Authorisation
+      summary: get the token from users
+      operationId: gettingToken
+      parameters:
+        - required: true
+          in: path
+          name: tokenid
+          type: string
+      responses:
+        '204':
+          description: Token is valid
+          schema:
+            $ref: '#/definitions/check_token'
+        '205':
+          description: Token is not valid
+          schema:
+            $ref: '#/definitions/check_token'
+    post:
+      tags:
+      - Giving Authorisation
+      summary: create a token
+      operationId: creatingToken
+      parameters:
+        - required: true
+          in: path
+          name: tokenid
+          type: string
+      responses:
+        '206':
+          description: Token created successfully
+          schema:
+            $ref: '#/definitions/create_token'
+        '207':
+          description: Problem in creating token
+          schema:
+            $ref: '#/definitions/create_token'
+          
+  /Products/{ListProducts}:
+    get:
+      tags:
+      - Listing Products
+      summary: Listing shoes
+      operationId: ListShoes
+      parameters:
+        - required: true
+          in: path
+          name: ListProducts 
+          type: string
+      responses:
+        '208':
+          description: Returning meta data
+          schema:
+            $ref: '#/definitions/list_out_shoes_meta_data'
+  /Products/ListProducts/{ShoeId}:
+    get:
+      tags:
+      - Listing Products
+      summary: Listing shoes by ID
+      operationId: ListShoesById
+      parameters:
+        - required: true
+          in: path
+          name: ShoeId
+          type: number
+      responses:
+        '209':
+          description: Returning meta data
+          schema:
+            $ref: '#/definitions/shoe_info_by_id'
+  /Products/select_shoe/{unique_shoe_id}:
+    post:
+      tags:
+      - Listing Products
+      summary: Selecting shoes by their unique ID
+      operationId: SelectByUniqueId
+      parameters:
+        - required: true
+          in: path
+          name: unique_shoe_id
+          type: string
+      responses:
+        '210':
+          description: Returning whether the purchase is successful or not
+          schema:
+            $ref: '#/definitions/check_successful_or_not'
+  /Products/delete_product/{unique_shoe_id}:
+    put:
+      tags:
+      - Updating Products
+      summary: Delete products by their unique id
+      operationId: deleteProduct
+      parameters:
+      - required: true
+        in: path
+        name: unique_shoe_id
+        type: number
+      responses:
+        '200':
+          description: Deleteing Product
+          schema:
+            $ref: '#/definitions/delete_product' 
+  /Products/add_products:
+    put:
+      tags:
+      - Updating Products
+      operationId: addProducts
+      parameters:
+        - name: brand
+          in: formData
+          type: string
+          required: true
+        - name: color
+          in: formData
+          type: string
+          required: true
+        - name: quantity
+          in: formData
+          type: number
+          required: true
+        - name: price
+          in: formData
+          type: number
+          required: true
+        - name: size
+          in: formData
+          type: number
+          required: true
+        - name: file
+          in: formData
+          type: file
+          required: true
+      responses:
+        '200':
+          description: Adding Product
+          schema:
+            $ref: '#/definitions/add_product'
+  /swagger:
+    x-swagger-pipe: swagger_raw
+definitions:
+  check_token:
+    required: 
+      - message
+    properties:
+      message:
+        type: string
+  create_token:
+    required:
+      - message
+    properties:
+      message:
+        type: string
+  list_out_shoes_meta_data:
+    type: object
+    required:
+      - ShoeType
+      - Brands
+      - Quantity
+      - ShoeId
+    properties:
+      ShoeType:
+        type: string
+      Brands:
+        type: string
+      Quantity:
+        type: number
+      ShoeId:
+        type: number
+  shoe_info_by_id:
+    type: object
+    required: 
+      - unique_id
+      - color
+      - quantity
+      - size
+    properties:
+      unique_id:
+        type: string
+      color:
+        type: string
+      quantity:
+        type: number
+      size:
+        type: string
+  check_successful_or_not:
+    type: string
+  delete_product:
+    type: string
+  add_product:
+    type: string
+
+      
